@@ -1,0 +1,17 @@
+ACE Dashboard
+
+oc project ace
+
+oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:ace
+
+[root@icp4int-inf cluster]# kubectl create secret generic ace-ent-helm-tls --from-file=cert.pem=$HOME/.helm/cert.pem --from-file=ca.pem=$HOME/.helm/ca.pem --from-file=key.pem=$HOME/.helm/key.pem --namespace=ace
+secret/ace-ent-helm-tls created
+
+
+ACE Designer
+
+oc new-project acedesigner
+
+oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:acedesigner
+
+oc create secret -n acedesigner docker-registry ibm-entitlement-key --docker-server=cp.icr.io --docker-username=ekey --docker-password=5LdK2zFdE53eho_rEqIn3-kEHfEUXMhICz3HranEiOh- --dry-run -o yaml | oc apply -f -

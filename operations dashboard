@@ -1,0 +1,7 @@
+Operations Dashboard
+
+[root@icp4int-inf cluster]# oc project tracing
+Now using project "tracing" on server "https://api.icp4int.os.fyre.ibm.com:6443".
+[root@icp4int-inf cluster]# oc adm policy add-scc-to-group anyuid system:serviceaccounts:tracing
+securitycontextconstraints.security.openshift.io/anyuid added to groups: ["system:serviceaccounts:tracing"]
+

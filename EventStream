@@ -1,0 +1,133 @@
+Event Streams
+
+From command line login to ocp cluster
+
+Check for ibm-restricted-scc policy in event stream namespace
+
+oc project eventstreams
+
+oc get scc
+
+NAME                        AGE
+anyuid                      12d
+hostaccess                  12d
+hostmount-anyuid            12d
+hostnetwork                 12d
+ibm-anyuid-hostaccess-scc   6d1h
+ibm-anyuid-hostpath-scc     6d1h
+ibm-anyuid-scc              6d1h
+ibm-aspera-hsts-icp4i-scc   6d1h
+ibm-privileged-scc          6d1h
+ibm-restricted-scc          6d1h
+icp-scc                     6d1h
+node-exporter               12d
+nonroot                     12d
+privileged                  12d
+restricted                  12d
+rook-ceph                   12d
+rook-ceph-csi               12d
+
+git clone https://github.com/IBM/charts.git
+
+cd charts/stable/ibm-eventstreams-dev/ibm_cloud_pak/pak_extensions/pre-install
+
+./scc.sh eventstreams
+
+oc get scc
+
+➜  pre-install git:(master) oc get scc
+NAME                        AGE
+anyuid                      12d
+hostaccess                  12d
+hostmount-anyuid            12d
+hostnetwork                 12d
+ibm-anyuid-hostaccess-scc   6d1h
+ibm-anyuid-hostpath-scc     6d1h
+ibm-anyuid-scc              6d1h
+ibm-aspera-hsts-icp4i-scc   6d1h
+ibm-es-scc                  6s
+ibm-privileged-scc          6d1h
+ibm-restricted-scc          6d1h
+icp-scc                     6d1h
+node-exporter               12d
+nonroot                     12d
+privileged                  12d
+restricted                  12d
+rook-ceph                   12d
+rook-ceph-csi               12d
+
+[root@icp4int-inf cluster]# kubectl get cm ibmcloud-cluster-info -n kube-public -o yaml
+apiVersion: v1
+data:
+  cluster_address: icp-console.apps.icp4int.os.fyre.ibm.com
+  cluster_ca_domain: icp-console.apps.icp4int.os.fyre.ibm.com
+  cluster_endpoint: https://icp-management-ingress.kube-system.svc:443
+  cluster_kube_apiserver_host: api.icp4int.os.fyre.ibm.com
+  cluster_kube_apiserver_port: "6443"
+  cluster_name: mycluster
+  cluster_router_http_port: "8080"
+  cluster_router_https_port: "443"
+  edition: Enterprise Edition
+  openshift_router_base_domain: apps.icp4int.os.fyre.ibm.com
+  proxy_address: icp-proxy.apps.icp4int.os.fyre.ibm.com
+  proxy_ingress_http_port: "80"
+  proxy_ingress_https_port: "443"
+  version: 3.2.4
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"cluster_address":"icp-console.apps.icp4int.os.fyre.ibm.com","cluster_ca_domain":"icp-console.apps.icp4int.os.fyre.ibm.com","cluster_endpoint":"https://icp-management-ingress.kube-system.svc:443","cluster_kube_apiserver_host":"api.icp4int.os.fyre.ibm.com","cluster_kube_apiserver_port":"6443","cluster_name":"mycluster","cluster_router_http_port":"8080","cluster_router_https_port":"443","edition":"Enterprise Edition","openshift_router_base_domain":"apps.icp4int.os.fyre.ibm.com","proxy_address":"icp-proxy.apps.icp4int.os.fyre.ibm.com","proxy_ingress_http_port":"80","proxy_ingress_https_port":"443","version":"3.2.4"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"ibmcloud-cluster-info","namespace":"kube-public"}}
+  creationTimestamp: "2020-04-08T18:56:48Z"
+  name: ibmcloud-cluster-info
+  namespace: kube-public
+  resourceVersion: "99893"
+  selfLink: /api/v1/namespaces/kube-public/configmaps/ibmcloud-cluster-info
+  uid: bf1001ba-ce43-42ac-9c1d-6dbe68ae48e7
+
+
+Get the following values
+========================
+cluster_address: icp-console.apps.icp4i.os.fyre.ibm.com
+proxy_ingress_https_port: "443"
+
+
+copy cloudctl into /usr/local/bin directory
+
+cloudctl login -a <cluster_address>
+
+[root@icp4int-inf cluster]# cloudctl login -a https://icp-console.apps.icp4int.os.fyre.ibm.com
+
+Username> admin
+
+Password>
+Authenticating...
+OK
+
+Targeted account mycluster Account
+
+Enter a namespace > eventstreams
+Targeted namespace eventstreams
+
+Configuring kubectl ...
+Property "clusters.mycluster" unset.
+Property "users.mycluster-user" unset.
+Property "contexts.mycluster-context" unset.
+Cluster "mycluster" set.
+User "mycluster-user" set.
+Context "mycluster-context" created.
+Switched to context "mycluster-context".
+OK
+
+Configuring helm: /root/.helm
+OK
+
+[root@icp4int-inf cluster]# kubectl create secret generic es-ent-helm-tls --from-file=cert.pem=$HOME/.helm/cert.pem --from-file=ca.pem=$HOME/.helm/ca.pem --from-file=key.pem=$HOME/.helm/key.pem --namespace=eventstreams
+
+secret/es-ent-helm-tls created
+
+
+
+ kubectl -n eventstreams get secret es1-ibm-es-proxy-secret --export -o yaml > proxy-secret.yaml
+
+ 

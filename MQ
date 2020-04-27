@@ -1,0 +1,116 @@
+➜  stable git:(master) cd ibm-mqadvanced-server-dev 
+➜  ibm-mqadvanced-server-dev git:(master) ls
+charts  Chart.yaml  ibm_cloud_pak  LICENSE  LICENSES  README.md  RELEASENOTES.md  requirements.yaml  templates  values-metadata.yaml  values.yaml
+➜  ibm-mqadvanced-server-dev git:(master) cd ibm_cloud_pak 
+➜  ibm_cloud_pak git:(master) ls
+manifest.yaml  pak_extensions  qualification.yaml
+➜  ibm_cloud_pak git:(master) cd pak_extensions 
+➜  pak_extensions git:(master) ls
+common  logo  post-delete  pre-install
+➜  pak_extensions git:(master) cd pre-install 
+➜  pre-install git:(master) ls
+clusterAdministration  namespaceAdministration
+➜  pre-install git:(master) oc project mq
+Now using project "mq" on server "https://api.icp4int.os.fyre.ibm.com:6443".
+➜  pre-install git:(master) cat clusterAdministration 
+cat: clusterAdministration: Is a directory
+➜  pre-install git:(master) cd clusterAdministration 
+➜  clusterAdministration git:(master) ls
+createSecurityClusterPrereqs.sh  ibm-mq-init-volume-as-root-scc.yaml
+➜  clusterAdministration git:(master) ./createSecurityClusterPrereqs.sh 
+Creating SecurityContextConstraints...
+securitycontextconstraints.security.openshift.io/ibm-mq-init-volume-as-root-scc created
+➜  clusterAdministration git:(master) oc get scc
+NAME                             AGE
+anyuid                           10h
+hostaccess                       10h
+hostmount-anyuid                 10h
+hostnetwork                      10h
+ibm-anyuid-hostaccess-scc        6h42m
+ibm-anyuid-hostpath-scc          6h42m
+ibm-anyuid-scc                   6h42m
+ibm-aspera-hsts-icp4i-scc        6h44m
+ibm-es-scc                       5h58m
+ibm-mq-init-volume-as-root-scc   33s
+ibm-privileged-scc               6h42m
+ibm-restricted-scc               6h42m
+icp-scc                          6h45m
+node-exporter                    10h
+nonroot                          10h
+privileged                       10h
+restricted                       10h
+rook-ceph                        10h
+rook-ceph-csi                    10h
+➜  clusterAdministration git:(master) ;s
+zsh: s: command not found...
+zsh: command not found: s
+➜  clusterAdministration git:(master) ls
+createSecurityClusterPrereqs.sh  ibm-mq-init-volume-as-root-scc.yaml
+➜  clusterAdministration git:(master) cd .. 
+➜  pre-install git:(master) ls
+clusterAdministration  namespaceAdministration
+➜  pre-install git:(master) cd namespaceAdministration 
+➜  namespaceAdministration git:(master) ls
+createSecurityNamespacePrereqs.sh
+➜  namespaceAdministration git:(master) ./createSecurityNamespacePrereqs.sh 
+Usage: createSecurityNamespacePrereqs.sh NAMESPACE
+➜  namespaceAdministration git:(master) ./createSecurityNamespacePrereqs.sh mq
+Adding all namespace users to SCC...
+securitycontextconstraints.security.openshift.io/ibm-mq-init-volume-as-root-scc added to groups: ["system:serviceaccounts:mq"]
+➜  namespaceAdministration git:(master) oc get scc
+NAME                             AGE
+anyuid                           10h
+hostaccess                       10h
+hostmount-anyuid                 10h
+hostnetwork                      10h
+ibm-anyuid-hostaccess-scc        6h43m
+ibm-anyuid-hostpath-scc          6h43m
+ibm-anyuid-scc                   6h43m
+ibm-aspera-hsts-icp4i-scc        6h45m
+ibm-es-scc                       5h59m
+ibm-mq-init-volume-as-root-scc   98s
+ibm-privileged-scc               6h43m
+ibm-restricted-scc               6h43m
+icp-scc                          6h46m
+node-exporter                    10h
+nonroot                          10h
+privileged                       10h
+restricted                       10h
+rook-ceph                        10h
+rook-ceph-csi                    10h
+➜  namespaceAdministration git:(master) oc describe scc ibm-mq-init-volume-as-root-scc
+Name:						ibm-mq-init-volume-as-root-scc
+Priority:					0
+Access:						
+  Users:					<none>
+  Groups:					system:serviceaccounts:mq
+Settings:					
+  Allow Privileged:				false
+  Allow Privilege Escalation:			true
+  Default Add Capabilities:			<none>
+  Required Drop Capabilities:			MKNOD
+  Allowed Capabilities:				CHOWN,FOWNER,DAC_OVERRIDE
+  Allowed Seccomp Profiles:			<none>
+  Allowed Volume Types:				configMap,downwardAPI,emptyDir,persistentVolumeClaim,projected,secret
+  Allowed Flexvolumes:				<all>
+  Allowed Unsafe Sysctls:			<none>
+  Forbidden Sysctls:				<none>
+  Allow Host Network:				false
+  Allow Host Ports:				false
+  Allow Host PID:				false
+  Allow Host IPC:				false
+  Read Only Root Filesystem:			false
+  Run As User Strategy: RunAsAny		
+    UID:					<none>
+    UID Range Min:				<none>
+    UID Range Max:				<none>
+  SELinux Context Strategy: MustRunAs		
+    User:					<none>
+    Role:					<none>
+    Type:					<none>
+    Level:					<none>
+  FSGroup Strategy: RunAsAny			
+    Ranges:					<none>
+  Supplemental Groups Strategy: RunAsAny	
+    Ranges:					<none>
+
